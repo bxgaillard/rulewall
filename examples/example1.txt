@@ -1,0 +1,63 @@
+chaine0 =
+  if
+    !
+    (
+      ip source turing.u-strasbg.fr/23
+    )
+  then
+    drop
+  else
+    reject
+;
+chaine1 =
+  if
+    (
+      udp  { ssh, http, https, imaps }
+    &&
+      (
+        !
+        (
+          tcp destination 1-1023
+        )
+      &&
+        ip destination 130.79.7.1/23
+      )
+    )
+  then
+    drop
+  else
+    if
+      tcp  80
+    then
+      if
+        (
+          udp source { 22, 80, 443, 993 }
+        ||
+          (
+            !
+            (
+              tcp destination { ssh, http, https, imaps }
+            )
+          ||
+            udp destination 80
+          )
+        )
+      then
+        accept
+      else
+        drop
+    else
+      drop
+;
+chaine2 =
+  if
+    (
+      tcp  80
+    ||
+      udp  { 22, 80, 443, 993 }
+    )
+  then
+    accept
+  else
+    drop
+;

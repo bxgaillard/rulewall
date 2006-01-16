@@ -1,0 +1,7 @@
+# Include another file--it works!
+include "test.txt"
+
+# Some dummy chains...
+core = accept;
+boulet = reject;
+ploup = drop;

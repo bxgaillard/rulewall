@@ -1,0 +1,299 @@
+chaine0 =
+  if
+    !
+    (
+      (
+        (
+          udp source { 22, 80, 443, 993 }
+        &&
+          ip source turing/255.255.254.0
+        )
+      &&
+        tcp destination { ssh, http, https, imaps }
+      )
+    )
+  then
+    reject
+  else
+    accept
+;
+chaine1 =
+  if
+    !
+    (
+      (
+        (
+          (
+            (
+              udp destination { 22, 80, 443, 993 }
+            &&
+              ip destination 130.79.7.1
+            )
+          &&
+            tcp source { 22, 80, 443, 993 }
+          )
+        &&
+          (
+            !
+            (
+              tcp source { ssh, http, https, imaps }
+            )
+          ||
+            tcp source http
+          )
+        )
+      ||
+        !
+        (
+          (
+            tcp source { 22, 80, 443, 993 }
+          &&
+            tcp source { ssh, http, https, imaps }
+          )
+        )
+      )
+    )
+  then
+    reject
+  else
+    reject
+;
+chaine2 =
+  if
+    !
+    (
+      !
+      (
+        (
+          tcp destination http
+        &&
+          (
+            udp source { ssh, http, https, imaps }
+          ||
+            (
+              udp source { ssh, http, https, imaps }
+            ||
+              (
+                (
+                  tcp  { ssh, http, https, imaps }
+                ||
+                  ip  130.79.7.1/23
+                )
+              &&
+                udp  1-1023
+              )
+            )
+          )
+        )
+      )
+    )
+  then
+    if
+      (
+        !
+        (
+          tcp destination { 22, 80, 443, 993 }
+        )
+      ||
+        (
+          ip destination { 130.79.7.227, ditx31.u-strasbg.fr, ditx80/24 }
+        &&
+          !
+          (
+            (
+              udp source 1-1023
+            &&
+              tcp source { ssh, http, https, imaps }
+            )
+          )
+        )
+      )
+    then
+      if
+        (
+          (
+            ip destination 130.79.7.1
+          ||
+            (
+              tcp destination 80
+            ||
+              tcp destination { 22, 80, 443, 993 }
+            )
+          )
+        &&
+          (
+            (
+              ip  130.79.7.1/255.255.254.0
+            &&
+              tcp source { 22, 80, 443, 993 }
+            )
+          &&
+            (
+              (
+                !
+                (
+                  tcp source { ssh, http, https, imaps }
+                )
+              ||
+                (
+                  tcp  80
+                &&
+                  ip destination 130.79.7.1/23
+                )
+              )
+            &&
+              ip  turing.u-strasbg.fr/23
+            )
+          )
+        )
+      then
+        if
+          (
+            udp source { 22, 80, 443, 993 }
+          ||
+            (
+              udp destination { ssh, http, https, imaps }
+            &&
+              ip  { 130.79.7.227, ditx31.u-strasbg.fr, ditx80/24 }
+            )
+          )
+        then
+          reject
+        else
+          drop
+      else
+        if
+          !
+          (
+            !
+            (
+              tcp source 1-1023
+            )
+          )
+        then
+          if
+            (
+              (
+                tcp source { ssh, http, https, imaps }
+              &&
+                udp  http
+              )
+            ||
+              (
+                tcp destination 80
+              ||
+                !
+                (
+                  !
+                  (
+                    ip  turing/255.255.254.0
+                  )
+                )
+              )
+            )
+          then
+            accept
+          else
+            accept
+        else
+          reject
+    else
+      if
+        (
+          udp  http
+        ||
+          tcp destination { 22, 80, 443, 993 }
+        )
+      then
+        if
+          !
+          (
+            (
+              (
+                tcp source http
+              ||
+                udp destination { 22, 80, 443, 993 }
+              )
+            ||
+              !
+              (
+                tcp destination { ssh, http, https, imaps }
+              )
+            )
+          )
+        then
+          reject
+        else
+          drop
+      else
+        if
+          (
+            tcp  { ssh, http, https, imaps }
+          &&
+            ip destination turing/255.255.254.0
+          )
+        then
+          accept
+        else
+          drop
+  else
+    if
+      (
+        (
+          !
+          (
+            udp destination { 22, 80, 443, 993 }
+          )
+        &&
+          tcp  80
+        )
+      &&
+        !
+        (
+          (
+            udp  http
+          ||
+            udp source { 22, 80, 443, 993 }
+          )
+        )
+      )
+    then
+      if
+        !
+        (
+          (
+            (
+              ip destination 130.79.7.1
+            &&
+              (
+                tcp  1-1023
+              &&
+                ip destination turing.u-strasbg.fr
+              )
+            )
+          ||
+            ip destination turing.u-strasbg.fr
+          )
+        )
+      then
+        if
+          (
+            !
+            (
+              tcp destination 80
+            )
+          &&
+            !
+            (
+              ip source turing/255.255.254.0
+            )
+          )
+        then
+          accept
+        else
+          drop
+      else
+        accept
+    else
+      accept
+;

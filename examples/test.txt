@@ -1,0 +1,22 @@
+/*
+ * A multi-line comment...
+ */
+// A single-line one
+# ... And another one!
+
+// The following example is from the subject.
+ak = # --- AK. ;o)
+if ip source turing.u-strasbg.fr then
+    if ( ip destination 130.79.0.0/16
+	 && tcp destination 1-1024 )
+       || ( tcp destination { http, https } ) then
+	accept
+    else
+	reject
+else if ip source { 130.79.6/24, 130.79.4.0/23 } then
+    accept
+else if tcp destination 1-1024 then
+    /*accept*/ reject
+else
+    drop
+;

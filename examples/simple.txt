@@ -1,0 +1,4 @@
+antispoofing =
+if ip source 192.168.0.0/16 && tcp destination 80
+then drop
+else accept;
